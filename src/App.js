@@ -1,12 +1,10 @@
 import React from 'react';
-// import Main from './pages/main';
-import ImageAnalysis from './pages/ImageAnalysis';
+import Playground from './pages/Playground';
 
 function App() {
   return (
    <>
-   {/* <Main /> */}
-   <ImageAnalysis />
+   <Playground />
    </>
   );
 }
