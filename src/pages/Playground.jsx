@@ -31,7 +31,12 @@ function Playground() {
                 loadingQuestion={loadingQuestion}
                 className='mb-4'
             />
-            <div className='flex flex-col-reverse md:flex-row items-center justify-evenly gap-4 my-2'>
+            {!question &&
+            <div>
+                <h2 className='text-center text-xl sm:text-2xl my-4'>Welcome to <span className='font-bold'>AI Playground</span> - Where Creativity Meets Learning</h2>
+            </div>
+            }
+            <div className='flex flex-col-reverse md:flex-row items-center justify-evenly gap-4 my-6'>
                 <Question question={question} className='text-lg font-semibold text-gray-800' />
                 <Score score={score}/>
             </div>
