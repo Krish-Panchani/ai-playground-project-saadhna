@@ -34,7 +34,7 @@ export const handleUpload = async (file, setLoadingUpload, setUniqueFileName, ha
         xhr.setRequestHeader('Content-Type', file.type);
         xhr.onload = async () => {
             if (xhr.status === 200) {
-                alert('File uploaded successfully');
+                alert('Drawing uploaded to AI - Successfully');
                 await handleSendPrompt(uniqueFileName, prompt, setResponseText, setLoadingResponse, setScore);
             } else {
                 alert('File upload failed');
