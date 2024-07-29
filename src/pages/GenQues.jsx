@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import DrawingCanvas from '../components/DrawingCanvas';
+import HowPlay from '../components/howPlay';
 
 function GenQues() {
   const [file, setFile] = useState(null);
@@ -84,11 +85,15 @@ function GenQues() {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Error getting response from cloud function');
       }
-
+      
       const responseText = await response.text();
+      const responseData = JSON.parse(responseText);
+
       setResponseText(responseText);
       setLoadingResponse(false);
-      setScore(prevScore => prevScore + 1);
+      // setScore(prevScore => prevScore + 1);
+      setScore(prevScore => prevScore + (responseData.points || 0));
+
     } catch (error) {
       console.error('Error getting response from cloud function:', error);
       alert('Error getting response from cloud function: ' + error.message);
@@ -98,7 +103,7 @@ function GenQues() {
 
   const handleGenerateQuestion = async () => {
     setLoadingQuestion(true);
-
+    
     try {
       const response = await fetch(process.env.REACT_APP_GENERATE_QUESTION_URL);
       if (!response.ok) {
@@ -120,49 +125,81 @@ function GenQues() {
     }
   };
 
+  const renderResponse = () => {
+    try {
+      const response = JSON.parse(responseText);
+      const { isCorrect, reason, points } = response;
+
+      if (isCorrect) {
+        return (
+          <div className='mt-4 border border-green-300 p-4 rounded-lg'>
+            <p><span className='text-green-600 font-bold'>Correct!</span> {reason}</p>
+            <p>Points: +{points}</p>
+          </div>
+        );
+      }
+      else
+        return (
+          <div className='mt-4 border border-red-300 p-4 rounded-lg'>
+            <p><span className='text-red-600 font-bold'>Incorrect!</span> {reason}</p>
+            <p>Points: {points}</p>
+          </div>
+        );
+    }
+    catch (error) {
+      console.error('Error parsing response:', error);
+      return <p>Invalid response format</p>;
+    }
+  };
+
   return (
     <div className='flex flex-col'>
       <div className='flex justify-between items-center px-4 py-2 bg-gray-200'>
-        <h1 className='text-3xl font-bold border-l-4 border-gray-800 pl-2'>AI PLAYGROUND</h1>
+        <h1 className='text-xl sm:text-3xl font-bold border-l-4 border-gray-800 pl-2'>AI PLAYGROUND</h1>
         <div className='flex items-center'>
-          <h2 className='text-lg mr-4'>Score: <span className='font-semibold'>{score}</span></h2>
+
           <button onClick={handleGenerateQuestion} className='bg-gray-800 px-4 py-2 text-white rounded-lg'>
             {loadingQuestion ? 'Loading...' : 'Generate Que'}
           </button>
         </div>
       </div>
       <div className='flex justify-between items-center mx-auto my-4'>
+        <h2 className='text-lg mr-4'>Score: <span className='font-semibold'>{score}</span></h2>
         <div>
           {question && (
             <div className='flex px-8 items-center'>
-              <h2 className='text-lg'>AI Generated Que: </h2>
-              <p className='text-xl font-semibold px-2 underline underline-offset-2'>{question}</p>
+              <h2 className='text-xl'>AI Generated Que: </h2>
+              <p className='text-2xl font-semibold px-2 underline underline-offset-2'>{question}</p>
             </div>
           )}
         </div>
       </div>
       <div className='flex flex-col justify-center items-center'>
-        <div className='flex flex-col items-start p-4 mb-4 border rounded-lg bg-gray-100'>
-          <h2 className='text-2xl font-semibold mb-2'>How to Play</h2>
-          <ol className='list-decimal list-inside'>
-            <li>Click the "Generate Que" button to get an AI-generated question.</li>
-            <li>Draw your answer to the question on the canvas below.</li>
-            <li>Click "Submit" to upload your drawing and see the response from the AI.</li>
-          </ol>
-        </div>
-        <DrawingCanvas ref={canvasRef} onDrawingComplete={handleDrawingComplete} />
-        <button onClick={handleUpload} className='bg-gray-800 px-4 py-2 text-white rounded-lg my-2'>
-          {loadingUpload ? 'Uploading...' : 'Submit'}
-        </button>
-      </div>
-      <div className='flex justify-center items-center'>
-        {loadingResponse && <p>Loading AI response...</p>}
-        {responseText && (
-          <div className='mt-4 border border-gray-300 p-4 rounded-lg'>
-            <h3 className='text-xl font-semibold'>AI Response:</h3>
-            <p>{responseText}</p>
+        <div className='flex '>
+
+          <div className='flex justify-center items-center'>
+            {loadingResponse && <p>Loading AI response...</p>}
+            {responseText && (
+              <div className='mt-4 border border-gray-300 p-4 rounded-lg'>
+                <h3 className='text-xl font-semibold'>AI Response:</h3>
+                {/* <p>{responseText}</p>
+             */}
+                {renderResponse()}
+              </div>
+            )}
           </div>
-        )}
+        </div>
+        {question &&
+          <div>
+            <DrawingCanvas ref={canvasRef} onDrawingComplete={handleDrawingComplete} />
+            <button onClick={handleUpload} className='bg-gray-800 px-4 py-2 text-white rounded-lg my-2'>
+              {loadingUpload ? 'Uploading...' : 'Submit'}
+            </button>
+          </div>
+        }
+      </div>
+      <div className='flex justify-center'>
+        <HowPlay />
       </div>
     </div>
   );
