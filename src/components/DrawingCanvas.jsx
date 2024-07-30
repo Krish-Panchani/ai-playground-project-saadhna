@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { FaUndo, FaRedo, FaEraser, FaPenAlt , FaTrashAlt } from 'react-icons/fa'; // Import icons
+import { FaUndo, FaRedo, FaEraser, FaPenAlt, FaTrashAlt } from 'react-icons/fa'; // Import icons
 
 const DrawingCanvas = forwardRef(({ onDrawingComplete, setIsCanvasEmpty }, ref) => {
   const canvasRef = useRef(null);
@@ -93,6 +93,11 @@ const DrawingCanvas = forwardRef(({ onDrawingComplete, setIsCanvasEmpty }, ref) 
     }
   };
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    canvas.style.cursor = `url('data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${brushSize}" height="${brushSize}" viewBox="0 0 ${brushSize} ${brushSize}"><circle cx="${brushSize/2}" cy="${brushSize/2}" r="${brushSize/2}" fill="${color}" /></svg>`)}') ${brushSize / 2} ${brushSize / 2}, auto`;
+  }, [brushSize, color]);
+
   return (
     <div className='flex flex-col justify-evenly'>
       <div className='flex flex-col md:flex-row justify-between gap-10'>
@@ -135,25 +140,25 @@ const DrawingCanvas = forwardRef(({ onDrawingComplete, setIsCanvasEmpty }, ref) 
             <div className='flex flex-col items-center gap-2'>
               <label className='font-medium text-sm sm:text-lg md:text-base'>Brush Size</label>
               <div className='flex'>
-              <div className='flex items-center'>
-                <input
-                  type="range"
-                  min="1"
-                  max="50"
-                  value={brushSize}
-                  onChange={(e) => setBrushSize(e.target.value)}
-                  className='mx-2'
-                />
-              </div>
-              <div
-                style={{
-                  width: brushSize + 'px',
-                  height: brushSize + 'px',
-                  backgroundColor: color,
-                  borderRadius: '50%',
-                  border: '1px solid black',
-                }}
-              ></div>
+                <div className='flex items-center'>
+                  <input
+                    type="range"
+                    min="1"
+                    max="50"
+                    value={brushSize}
+                    onChange={(e) => setBrushSize(e.target.value)}
+                    className='mx-2'
+                  />
+                </div>
+                <div
+                  style={{
+                    width: brushSize + 'px',
+                    height: brushSize + 'px',
+                    backgroundColor: color,
+                    borderRadius: '50%',
+                    border: '1px solid black',
+                  }}
+                ></div>
               </div>
             </div>
           </div>
