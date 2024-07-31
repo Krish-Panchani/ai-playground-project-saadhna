@@ -1,0 +1,11 @@
+[
+    {
+      "origin": [
+        "http://localhost:3000",
+        "YOUR-CLOUD-RUN-URL"
+        ],
+      "responseHeader": ["Content-Type", "Authorization"],
+      "method": ["PUT", "POST", "GET"],
+      "maxAgeSeconds": 3600
+    }
+  ]
