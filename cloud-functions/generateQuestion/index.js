@@ -13,7 +13,7 @@ exports.generateQuestion = async (req, res) => {
   }
   
   try {
-    const projectId = '<YOUR-PROJECT-ID>';
+    const projectId = process.env.PROJECT_ID;
     const location = 'us-central1';
     const model = 'gemini-1.5-flash-001';
     

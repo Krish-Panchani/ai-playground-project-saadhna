@@ -2,7 +2,7 @@ const { Storage } = require('@google-cloud/storage');
 const { v4: uuidv4 } = require('uuid');
 
 const storage = new Storage({
-  projectId: "<YOUR-PROJECT-ID>",
+  projectId: process.env.PROJECT_ID,
 });
 
 exports.generateSignedUrls = async (req, res) => {
@@ -16,7 +16,7 @@ exports.generateSignedUrls = async (req, res) => {
     return;
   }
 
-  const bucketName = 'ai-playground-images';
+  const bucketName = process.env.BUCKET_NAME;
   const originalFileName = req.query.objectName;
   const action = req.query.action; // 'upload' or 'read'
 

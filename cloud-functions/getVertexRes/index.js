@@ -13,7 +13,8 @@ exports.getVertexRes = async (req, res) => {
   }
   
   try {
-    const projectId = '<YOUR-PROJECT-ID>';
+    const projectId = process.env.PROJECT_ID;
+    const bucket_name = process.env.BUCKET_NAME;
     const location = 'us-central1';
     const model = 'gemini-1.5-flash-001';
     
@@ -23,7 +24,7 @@ exports.getVertexRes = async (req, res) => {
     Compare the statement with Image and check if statement object is present in the image or not if present then return isCorrect:true else return isCorrect:false in JSON format. also give reason why it is correct or not. and give point between 1 to 10 according to how drawing match with statement, give 1 point if isCorrect is false.\n\n
     json format: {isCorrect: boolean, reason: string, points: number}`;
 
-    const imageUri = `gs://ai-playground-images/${fileName}`;
+    const imageUri = `gs://${bucket_name}/${fileName}`;
     const mimeType = 'image/png'; // Update this if necessary based on your file types
 
     // Initialize Vertex with your Cloud project and location
